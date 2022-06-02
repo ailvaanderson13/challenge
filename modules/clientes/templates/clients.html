@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" crossorigin="anonymous">
+{% endblock %}
+
+  {% block content %}
+
+  <div class="container">
+    <form method="post" action="">
+    {% csrf_token %}
+      <div class="row pt-5">
+          <div class="col-3 text-secondary">
+              <p class="h4"><strong>Dados Cadastrais</strong></p>
+              <p class="h5">
+                  Informações cadastrais da empresa cliente.
+              </p>
+          </div>
+          <div class="col-8 offset-1 rounded shadow p-3">
+              <div class="container">
+                <div class="row my-3">
+                    <div class="col-9">
+                        <div class="form-group">
+                            <label for="{{newcompany_form.active.auto_id}}" >{{form.company_name.label}}</label>
+                            {{form.company_name}}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="{{form.active.auto_id}}" >{{form.active.label}}</label>
+                            {{form.active}}
+                        </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      {% include 'includes/add-filial.html' %}
+      <div class="row pt-5">
+        <div class="col-3 text-secondary">
+            <p class="h4"><strong>CNPJs</strong></p>
+            <p class="h5">
+                Cadastro de CNPJs relacionaos com a empresa cliente.
+                Arquivos serão associados a um CNPJ durante o upload.
+            </p>
+        </div>
+        <div class="col-8 offset-1 p-3">
+            <div class="row rounded shadow ">
+                <div class="col-12">
+                    <div class="container">
+                        <div class="row py-3 bg-light" id="listFilial">
+                            <div class="col-12 d-flex justify-content-end">
+                                <button class="btn btn-primary btn-newfilial" type="button">
+                                    <img class="pr-2" src="{% static 'front/images/plus.svg' %}" width="20px" height="20px"/>&nbspNovo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 mt-4">
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-4">
+                <div class="col-6">
+                    <button type="button" class="btn btn-outline-danger btn-lg">Excluir</button>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    <a class="btn btn-primary btn-lg" href="{% url 'clientes:clientes' %}" role="button">Salvar</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    </form>
+  </div>
+  {% endblock content %}
+  {% block extra_js %}
+  <script>
+    $('.btn-newfilial').click(function(e){
+        e.preventDefault();
+        $('#modal-newfilial').modal('show');
+    });
+
+    $('.cnpj-mask').mask('00.000.000/0000-00', {reverse: true});
+  </script>
+
+  <script>
+        function ListFilial(dados) {
+            $.each(dados, function( data ) {
+                $("#listFilial").append(`
+                    <div class="row border-bottom pt-3">
+                        <div class="col-4">
+                            <p class="p-0">${data['cnpj']}</p>
+                        </div>
+                        <div class="col-5">
+                            <p class="p-0">${data['company_name']}</p>
+                        </div>
+                        <div class="col-1">
+                            <div class="text-center text-light rounded-pill bg-success">
+                                ${data['active']}
+                            </div>
+                        </div>
+                        <div class="col-2 d-flex justify-content-end pb-2">
+                            <button type="button" class="btn btn-round-blue"><img src="{% static 'front/images/edit.svg' %}" width="24px" height="24px"/>Editar</button>
+                        </div>
+                    </div>
+                `);
+            });
+
+        }
+
+      $('.btn-sendform').click(function() {
+        $.ajax({
+            url: '{% url "clientes:add-filial" %}',
+            data: {
+                'cnpj': $('#id_cnpj').val(),
+                'active': $('#id_active_filial').val(),
+                'company_name': $('#id_company_name').val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                ListFilial(formdata);
+            }
+        })
+
+      })
+
+  </script>
+
+  {% endblock extra_js %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" integrity="sha256-FdatTf20PQr/rWg+cAKfl6j4/IY3oohFAJ7gVC3M34E=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css"> <!-- for live demo page -->
+{% endblock %}
+
+  {% block content %}
+
+  <div class="container">
+      <div class="row mt-5 mb-3">
+          <div class="col-12 d-flex justify-content-end">
+            <a class="btn btn-primary" href="{% url 'clientes:clientes' %}" role="button">Novo</a>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-12 rounded shadow ">
+              <div class="container">
+                <div class="row border-bottom pt-3">
+                    <div class="col-9">
+                        <p class="p-0">LATAM Airlines Brasil</p>
+                    </div>
+                    <div class="col-1">
+                        <div class="text-center text-light rounded-pill bg-success">
+                            Ativo
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex justify-content-end pb-2">
+                        <button type="button" class="btn btn-round-blue"><img src="{% static 'front/images/edit.svg' %}" width="24px" height="24px"/>Editar</button>
+                    </div>
+                  </div>
+                  <div class="row border-bottom justify-content-middle pt-3">
+                    <div class="col-9">
+                        <p>LATAM Airlines Brasil</p>
+                    </div>
+                    <div class="col-1">
+                        <div class="text-center text-light rounded-pill bg-secondary">
+                            Inativo
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex justify-content-end pb-2">
+                        <button type="button" class="btn btn-round-blue"><img src="{% static 'front/images/edit.svg' %}" width="24px" height="24px"/>Editar</button>
+                    </div>
+                  </div>
+                  <div class="row border-bottom pt-3">
+                    <div class="col-9">
+                        <p>LATAM Airlines Brasil</p>
+                    </div>
+                    <div class="col-1">
+                        <div class="text-center text-light rounded-pill bg-success">
+                            Ativo
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex justify-content-end pb-2">
+                        <button type="button" class="btn btn-round-blue"><img src="{% static 'front/images/edit.svg' %}" width="24px" height="24px"/>Editar</button>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+  </div>
+  {% endblock content %}
+
+  {% block extra_js %}
+  <script>
+    $('.btn-newfilial').click(function(e){
+        e.preventDefault();
+        $('#modal-newfilial').modal('show');
+    });
+
+    $('.cnpj-mask').mask('00.000.000/0000-00', {reverse: true});
+  </script>
+
+  <script>
+        function ListFilial(dados) {
+            $.each(dados, function( data ) {
+                $("#listFilial").append(`
+                    <div class="row border-bottom pt-3">
+                        <div class="col-4">
+                            <p class="p-0">${data['cnpj']}</p>
+                        </div>
+                        <div class="col-5">
+                            <p class="p-0">${data['company_name']}</p>
+                        </div>
+                        <div class="col-1">
+                            <div class="text-center text-light rounded-pill bg-success">
+                                ${data['active']}
+                            </div>
+                        </div>
+                        <div class="col-2 d-flex justify-content-end pb-2">
+                            <button type="button" class="btn btn-round-blue"><img src="{% static 'front/images/edit.svg' %}" width="24px" height="24px"/>Editar</button>
+                        </div>
+                    </div>
+                `);
+            });
+
+        }
+
+      $('.btn-sendform').click(function() {
+        $.ajax({
+            url: '{% url "clientes:add-filial" %}',
+            data: {
+                'cnpj': $('#id_cnpj').val(),
+                'active': $('#id_active_filial').val(),
+                'company_name': $('#id_company_name').val()
+            },
+            dataType: 'json',
+            success: function (data) {
+                ListFilial(formdata);
+            }
+        })
+
+      })
+
+  </script>
+
+  {% endblock extra_js %}

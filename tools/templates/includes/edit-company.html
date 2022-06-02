@@ -1,0 +1,41 @@
+
+  <div class="modal" tabindex="-1" id="modal-newuser">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editando CNPJ</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+          <form action="{% url 'property:index' %}" method="GET">
+            <div class="row">
+              <div class="col-md-4 mb-2">{{form_search.kind}}</div>
+              <div id="navmodal" class="col-md-4 mb-2">{{form_search.uf_search}}</div>
+              <div id="navmodal" class="col-md-4 mb-2">{{form_search.city_search}}</div>
+            </div>
+            <div class="row" id="form-search-content">
+                <div class="col-md-4 mb-2">{{form_search.bedroom}}</div>
+                <div class="col-md-4 mb-2">{{form_search.suite}}</div>
+                <div class="col-md-4 mb-2">{{form_search.garage}}</div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <button id="bt-reset" class="btn btn-orange" type="reset">LIMPAR</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-purple float-right" type="submit">PESQUISAR</button>
+              </div>
+            </div>
+          </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+          {% comment %} <button type="button" class="btn btn-primary">Save changes</button> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
