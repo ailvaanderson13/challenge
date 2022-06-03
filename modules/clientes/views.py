@@ -1,5 +1,6 @@
 from multiprocessing import context
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.base import TemplateView
@@ -7,32 +8,14 @@ from django.views.generic.detail import DetailView
 from ..clientes.models import Clients, Filial
 from django.views.generic.edit import UpdateView, FormView, CreateView
 from django.db.models import Q
-from .forms import NewCompany, NewFilial
+from .forms import FormClient, NewFilial
 from django.http import JsonResponse
 
 
 class ListClients(FormView):
     template_name = "clients.html"
-    form_class = NewCompany
+    form_class = FormClient
 
-    
-    def get_initial(self):
-        initial = dict()
-
-        for item in ['cnpj', 'filial_names', 'company_name', 'active_filial',
-                     'active']:
-            initial[item] = None
-
-        if self.request.GET.get('sample', False):
-            model = Clients.objects.get(id=self.request.GET['sample'])
-            initial['cnpj'] = model.bedroom
-            initial['filial_names'] = model.suite
-            initial['company_name'] = model.bathroom
-            initial['active_filial'] = model.total_area
-            initial['active'] = model.total_area
-
-        print(initial)
-        return initial
 
 class AddClient(View):
     def  get(self, request):
@@ -45,7 +28,8 @@ class AddClient(View):
         )
         
         context = Clients.objects.values()
-        context.append({'id':obj.id,'active':obj.active,'company':obj.company})
+
+        print(context)
 
         data = {
             'context': context
@@ -53,24 +37,49 @@ class AddClient(View):
         return JsonResponse(data)
 
 
-class AddFilial(View):
+class AjaxFormMixin:
 
-    def  get(self, request):
-        active1 = request.GET.get('name', None)
-        filialname1 = request.GET.get('address', None)
-        cnpj1 = request.GET.get('age', None)
+    def form_invalid(self, form):
+        return JsonResponse(form.errors.as_data())
 
-        obj = Filial.objects.create(
-            active = active1,
-            filial_name = filialname1,
-            cnpj = cnpj1
-        )
-        
-        context = Filial.objects.filter(company=self.request.company_pk).values()
-        context.append({'id':obj.id,'active':obj.active,'filial_name':obj.filial_name,'cnpj':obj.cnpj})
+    def form_valid(self, form):
+        self.object = form.save()
+        return JsonResponse({
+            'status': True,
+            "pk": self.object.pk,
+        })
+
+class AddFilial(AjaxFormMixin, CreateView):
+    model = Filial
+    form_class = NewFilial
+
+
+class ListFilial(View):
+
+    def get(self, request):
+        query = Q()
+        if request.GET.get('company', None):
+            query.add(Q(company=request.GET['company']), Q.AND)
+        data = Filial.objects.filter(query).values(
+            'id','cnpj', 'filial_name', 'active').order_by('created_at')
+        return JsonResponse(list(data), safe=False)
+
+class UpdateFilial(View):
+
+    def post(self, request):
+        id1 = request.POST.get('filial', None)
+        #f = Filial.objects.get(id=id1)
+        f = get_object_or_404(Filial, id=id1)
+        filialname1 = request.POST.get('filial_name', None)
+        active1 = request.POST.get('active', None)
+        cnpj1 = request.POST.get('cnpj', None)
+        f.active = active1
+        f.filial_name = filialname1
+        f.cnpj = cnpj1
+
+        f.save()
 
         data = {
-            'context': context
+            'update': True
         }
         return JsonResponse(data)
-

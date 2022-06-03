@@ -9,29 +9,31 @@
         </div>
         <div class="modal-body">
           <div class="container-fluid">
-          <form action="" method="GET">
+          <form id="addFilial">
             {% csrf_token %}
+            {{newfilial.company}}
+            <input type="hidden" name="filial" value="" id="id_filial">
             <div class="row py-3">
                 <div class="col-12">
                     <div class="form-group">
-                        <label for="{{newcompany_form.active.auto_id}}" >{{form.active_filial.label}}</label>
-                        {{form.active_filial}}
+                        <label for="{{newcompany_form.active.auto_id}}" >{{newfilial.active.label}}</label>
+                        {{newfilial.active}}
                     </div>
                 </div>
             </div>
             <div class="row py-3">
               <div class="col-12">
                   <div class="form-group">
-                      <label for="{{newcompany_form.company_name.auto_id}}" >{{form.cnpj.label}}</label>
-                      {{form.cnpj}}
+                      <label for="{{newcompany_form.company_name.auto_id}}" >{{newfilial.cnpj.label}}</label>
+                      {{newfilial.cnpj}}
                   </div>
               </div>
           </div>
             <div class="row py-3">
                 <div class="col-12">
                     <div class="form-group">
-                        <label for="{{newcompany_form.company_name.auto_id}}" >{{form.company_name.label}}</label>
-                        {{form.company_name}}
+                        <label for="{{newcompany_form.company_name.auto_id}}" >{{newfilial.filial_name.label}}</label>
+                        {{newfilial.filial_name}}
                     </div>
                 </div>
             </div>
@@ -39,8 +41,12 @@
               <div class="col-6">
                 <button id="bt-reset" class="btn btn-danger" type="reset">Limpar</button>
               </div>
-              <div class="col-6 d-flex justify-content-end">
-                <button class="btn btn-primary btn-sendform" type="text">Salvar</button>
+              <div id="btn-filialadd" class="col-6 d-flex justify-content-end">
+                <button  class="btn btn-primary btn-sendFilialForm" type="button">Salvar</button>
+                
+              </div>
+              <div id="btn-filialedit" class="col-6 d-flex justify-content-end d-none">
+                <button  class="btn btn-primary btn-editFilialForm" type="button">Salvar</button>                
               </div>
             </div>
           </form>

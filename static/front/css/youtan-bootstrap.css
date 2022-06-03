@@ -22,3 +22,9 @@ nav .navbar-nav li a{
 form label {
     font-weight: bold!important;
 }
+
+.clearfix::after{
+    display:block;
+    clear:both;
+    content:"";
+}

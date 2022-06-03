@@ -1,5 +1,7 @@
+from multiprocessing.connection import Client
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from .models import Clients, Filial
 
 class EditCNPJ(forms.Form):
     TYPE_CHOICES = (
@@ -16,9 +18,9 @@ class EditCNPJ(forms.Form):
     company_name = forms.CharField(
         label="Nome", required=True, widget=forms.TextInput(attrs={'class': 'form-control', }))
 
-class NewCompany(forms.Form):
+class FormClient(forms.ModelForm):
 
-    IS_ACTIVE = (
+    TYPE_CHOICES = (
         (True, "Sim"),
         (False, "Não")
     )
@@ -26,34 +28,38 @@ class NewCompany(forms.Form):
     active = forms.ChoiceField(
         required=False, label=_('Ativo'),
         widget=forms.Select(attrs={'class': 'form-control'}),
-        choices=IS_ACTIVE)
-    cnpj = forms.CharField(
-        label="CNPJ", required=True, widget=forms.TextInput(attrs={'class': 'form-control cnpj-mask', }))
-    filial_names = forms.CharField(
-        label="Nome", required=True, widget=forms.TextInput(attrs={'class': 'form-control', }))
-
-    active_filial = forms.ChoiceField(
-        required=False, label="Ativo",
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        choices=IS_ACTIVE)
+        choices=TYPE_CHOICES)
 
     company_name = forms.CharField(
-        label="Nome", required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'required': 'True'}))
+        label="Nome", required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'required': 'True'}))
+
+    class Meta:
+        model = Clients
+        fields = ['active', 'company_name']
+
     
 
-class NewFilial(forms.Form):
-    IS_ACTIVE = (
+class NewFilial(forms.ModelForm):
+    TYPE_CHOICES = (
         (True, "Sim"),
         (False, "Não")
+    )
+
+    company = forms.ModelChoiceField(
+        label='',queryset=Clients.objects.all(), widget=forms.HiddenInput
     )
 
     active = forms.ChoiceField(
         required=False, label="Ativo",
         widget=forms.Select(attrs={'class': 'form-control'}),
-        choices=IS_ACTIVE)
+        choices=TYPE_CHOICES)
 
     cnpj = forms.CharField(
         label="CNPJ", required=True, widget=forms.TextInput(attrs={'class': 'form-control cnpj-mask', }))
 
-    company_name = forms.CharField(
+    filial_name = forms.CharField(
         label="Nome", required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'required': 'True'}))
+    
+    class Meta:
+        model = Filial
+        fields = ['active', 'cnpj', 'filial_name', 'company']

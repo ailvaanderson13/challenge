@@ -8,4 +8,7 @@ app_name = 'home'
 
 urlpatterns = [
     path('', views.Home.as_view(), name='index'),
+    path('add-client', views.CreateClient.as_view(), name='add-client'),
+    path('update-client/<int:pk>/', views.UpdateClient.as_view(), name='update-client'),
+    path('delete/<int:pk>/', views.DeleteClient.as_view(), name='delete-client')
 ]

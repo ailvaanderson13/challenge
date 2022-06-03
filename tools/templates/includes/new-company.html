@@ -1,32 +1,24 @@
-  <div class="modal" tabindex="-1" id="modal-newfilial">
+  <div class="modal" tabindex="-1" id="modal-newcompany">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Adicionar uma nova filial</h5>
+          <h5 class="modal-title">Adicionar um novo Cliente</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="container-fluid">
-          <form action="" method="GET">
+          <form action="{% url 'home:add-client' %}" method="POST">
             {% csrf_token %}
             <div class="row py-3">
                 <div class="col-12">
                     <div class="form-group">
-                        <label for="{{newcompany_form.active.auto_id}}" >{{form.active_filial.label}}</label>
-                        {{form.active_filial}}
+                        <label for="{{form.active.auto_id}}" >{{form.active.label}}</label>
+                        {{form.active}}
                     </div>
                 </div>
             </div>
-            <div class="row py-3">
-              <div class="col-12">
-                  <div class="form-group">
-                      <label for="{{newcompany_form.company_name.auto_id}}" >{{form.cnpj.label}}</label>
-                      {{form.cnpj}}
-                  </div>
-              </div>
-          </div>
             <div class="row py-3">
                 <div class="col-12">
                     <div class="form-group">
@@ -40,7 +32,7 @@
                 <button id="bt-reset" class="btn btn-danger" type="reset">Limpar</button>
               </div>
               <div class="col-6 d-flex justify-content-end">
-                <button class="btn btn-primary btn-sendform" type="text">Salvar</button>
+                <button class="btn btn-primary" type="submit">Salvar</button>
               </div>
             </div>
           </form>
