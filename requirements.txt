@@ -20,4 +20,4 @@ django-storages==1.9.1
 django-taggit==2.0.0
 django-widget-tweaks==1.4.8
 djangorestframework==3.11.1
-psycopg2-binary==2.8.4
+
